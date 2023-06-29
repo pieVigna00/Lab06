@@ -2,6 +2,8 @@ package it.polito.tdp.meteo;
 
 import javafx.application.Application;
 import static javafx.application.Application.launch;
+
+import it.polito.tdp.meteo.model.Model;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -18,6 +20,9 @@ public class EntryPoint extends Application {
     	
     	FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Scene.fxml"));
         Parent root = loader.load();
+        controller= loader.getController();
+        Model model= new Model();
+        controller.setModel(model);
         Scene scene = new Scene(root);
         scene.getStylesheets().add("/styles/Styles.css");
         scene.getRoot().setStyle("-fx-font-family: 'serif'");

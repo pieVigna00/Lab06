@@ -5,8 +5,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
+import it.polito.tdp.meteo.model.Citta;
 import it.polito.tdp.meteo.model.Rilevamento;
 
 public class MeteoDAO {
@@ -38,11 +42,61 @@ public class MeteoDAO {
 			throw new RuntimeException(e);
 		}
 	}
+	public List<Integer> getAllRilevamentiLocalitaMese(int mese, String localita) {
+		final String sql="SELECT Umidita "
+				+ "FROM situazione "
+				+ "WHERE Localita=? AND MONTH(DATA)=? "
+				+ "ORDER BY DATA ASC";
+		List<Integer> listaUmidita = new ArrayList<Integer>();
 
-	public List<Rilevamento> getAllRilevamentiLocalitaMese(int mese, String localita) {
+		try {
+			Connection conn = ConnectDB.getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setString(1, localita);
+			st.setInt(2, mese);
 
-		return null;
+			ResultSet rs = st.executeQuery();
+
+			while (rs.next()) {
+				listaUmidita.add(rs.getInt("Umidita"));
+				
+			}
+
+			conn.close();
+			return listaUmidita;
+
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+
 	}
+	public List<Citta> getLocalita(){
+		final String sql = "SELECT DISTINCT Localita FROM situazione";
 
+		List<Citta> localita = new ArrayList<Citta>();
 
+		try {
+			Connection conn = ConnectDB.getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+
+			ResultSet rs = st.executeQuery();
+
+			while (rs.next()) {
+
+				Citta c = new Citta(rs.getString("Localita"));
+				localita.add(c);
+			}
+
+			conn.close();
+			return localita;
+
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+		
+	}
 }
